@@ -21,7 +21,7 @@
                         </div>
                     </div>
                     
-                    <!-- <ul class="list-group">
+                    <ul class="list-group">
                         <li class="list-group-item d-flex justify-content-between " v-for="(fruit,index) in fruits">
                             {{fruit}}
                             <div>
@@ -29,53 +29,62 @@
                                 <button  class="btn btn-sm btn-danger" @click="del(fruit)">Delete</button>
                             </div>
                         </li>
-                    </ul> -->
+                    </ul>
             </div>
+            <div class="row ">
+               <div class="col-lg-4 mx-5 ">
 
-            <div class="col-lg-4 mx-5">
-              <h3>Voucher:{{vId}}</h3>
-              <form action="" @submit.prevent="saveItem">
-              <div class="row">
-                <div class="col">
-                  <label for="" class="form-label">Select item</label>
-                  <select class="form-select form-select-lg" v-model="selectedItem" id="" aria-label="Default select example">
-                    <option v-for="item in items" :value="item.id" :key="item.name">{{item.name}}</option>
-                  </select>
-                </div>
-                <div class="col">
-                  <label for="" class="form-label">quality</label>
-                  <input type="number" class="form-control form-control-lg" v-model="inputQuantity" id="" >
-                </div>
-                <div class="col">
-                  <button  class="btn btn-primary">Add Item</button>
-                </div>
-              </div>
-                
-              </form>
-           
+                  <h3>Voucher:{{vId}}</h3>
+
+                  <form action="" @submit.prevent="saveItem">
+                    <div class="row align-items-end">
+                      <div class="col">
+                        <label for="" class="form-label">Select item</label>
+                        <select class="form-select form-select-lg" v-model="selectedItem" id="" aria-label="Default select example">
+                          <option v-for="item in items" :value="item.id" :key="item.name">{{item.name}}</option>
+                        </select>
+                      </div>
+                      <div class="col">
+                        <label for="" class="form-label">quality</label>
+                        <input type="number" class="form-control form-control-lg" v-model="inputQuantity" id="" >
+                      </div>
+                      <div class="col">
+                        <button  class="btn btn-primary">Add Item</button>
+                      </div>
+                    </div>
+                  </form>
             </div>
+            </div>
+           
             <div class="col-lg-8">
-               <table class="table table-bordered my-3">
+               <table class="table table-bordered my-3" v-if="getListTotal">
                 <thead>
                   <tr>
                     <th>#</th>
                     <th>Item</th>
                     <th>quantity</th>
+                    <th>Unit price</th>
                     <th>Cost</th>
-                    <th></th>
                   </tr>
-
                 </thead>
-                <tbody>
-                  <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                  </tr>
 
+                <tbody>
+                  <tr v-for="(list,index) in lists" :key="index">
+                    <td>{{index+1}}</td>
+                    <td>{{list.name}}</td>
+                    <td>{{list.quantity}}</td>
+                    <td>{{list.unitPrice}}</td>
+                    <td>{{list.cost}}</td>
+                  </tr>
                 </tbody>
+                  
+                <tfoot>
+                  <tr>
+                     <td colspan="4">Cost Total</td>
+                     <td>{{getCostTotal}}</td>
+                    </tr>
+                </tfoot>
+
                </table>
             </div>
         </div>
@@ -123,34 +132,38 @@
       getTotal(){
                     return this.fruits.length
                 },
-      name(){
-        return this.data
-      }
+     getListTotal(){
+       return this.lists.length
+     },
+     getCostTotal(){
+       return this.lists.reduce((x,y)=>x+y.cost,0)
+     }
     },
     methods: {
-    //  addNewFruit(){
-    //                 // alert("hello")
-    //                 this.fruits.push(this.newfruit)
-    //                 this.newfruit=""
-    //             },
-    //             del(x){
-    //                 // if(confirm("R U sure to delete")){
-    //                 //     this.fruits=this.fruits.filter(fruit=>fruit!=x)
+     addNewFruit(){
+                    // alert("hello")
+                    this.fruits.push(this.newfruit)
+                    this.newfruit=""
+                },
+                del(x){
+                    // if(confirm("R U sure to delete")){
+                    //     this.fruits=this.fruits.filter(fruit=>fruit!=x)
 
-    //                 // }
-    //                 v.fruits.splice(x,1)
-    //             },
-    //             edit(x){
-    //                 let newVel=prompt("do u want to edit",this.fruits[x]);
-    //                 this.fruits[x]=newVel;
-    //             }
+                    // }
+                    v.fruits.splice(x,1)
+                },
+                edit(x){
+                    let newVel=prompt("do u want to edit",this.fruits[x]);
+                    this.fruits[x]=newVel;
+                },
 
     saveItem(){
       // alert("hello")
       let list={
         itemId : this.selectedItem,
+        name : this.items.find(el=>el.id === this.selectedItem).name,
         quantity : this.inputQuantity,
-        unitPrice : this.item.find(el=>el.id === this.selectedItem).price,
+        unitPrice : this.items.find(el=>el.id === this.selectedItem).price,
         cost : this.items.find(el=>el.id===this.selectedItem).price* this.inputQuantity
       }
       this.selectedItem=null;
